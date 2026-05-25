@@ -1,0 +1,243 @@
+### =====================================================
+### PARKGRID PRO BACKEND TEST FILE
+### FILE NAME: test.http
+### =====================================================
+
+@baseUrl = http://localhost:5000
+
+### =====================================================
+### HOME ROUTE
+### =====================================================
+
+GET {{baseUrl}}/
+
+### =====================================================
+### CUSTOMER SIGNUP
+### =====================================================
+
+POST {{baseUrl}}/api/auth/signup
+Content-Type: application/json
+
+{
+  "full_name": "Naveen Kumar",
+  "email": "naveen@gmail.com",
+  "phone": "9876543210",
+  "password": "123456",
+  "role": "Customer"
+}
+
+### =====================================================
+### ADMIN SIGNUP
+### =====================================================
+
+POST {{baseUrl}}/api/auth/signup
+Content-Type: application/json
+
+{
+  "full_name": "Admin User",
+  "email": "admin@gmail.com",
+  "phone": "9999999999",
+  "password": "123456",
+  "role": "Admin",
+  "adminCode": "Naveen"
+}
+
+### =====================================================
+### STAFF SIGNUP
+### =====================================================
+
+POST {{baseUrl}}/api/auth/signup
+Content-Type: application/json
+
+{
+  "full_name": "Staff User",
+  "email": "staff@gmail.com",
+  "phone": "8888888888",
+  "password": "123456",
+  "role": "Staff"
+}
+
+### =====================================================
+### CUSTOMER LOGIN
+### =====================================================
+
+POST {{baseUrl}}/api/auth/login
+Content-Type: application/json
+
+{
+  "email": "naveen@gmail.com",
+  "password": "123456"
+}
+
+### =====================================================
+### ADMIN LOGIN
+### =====================================================
+
+POST {{baseUrl}}/api/auth/login
+Content-Type: application/json
+
+{
+  "email": "admin@gmail.com",
+  "password": "123456"
+}
+
+### =====================================================
+### STAFF LOGIN
+### =====================================================
+
+POST {{baseUrl}}/api/auth/login
+Content-Type: application/json
+
+{
+  "email": "staff@gmail.com",
+  "password": "123456"
+}
+
+### =====================================================
+### COPY TOKEN HERE AFTER LOGIN
+### =====================================================
+
+@customerToken = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwicm9sZSI6IkN1c3RvbWVyIiwiZW1haWwiOiJuYXZlZW5AZ21haWwuY29tIiwiaWF0IjoxNzc5NTQyMTI0LCJleHAiOjE3ODAxNDY5MjR9.2nlzIDUvZ1poyqd21n_Wj7c4Fq6Rp5P3rcBb5NMY8sM
+@adminToken = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6Miwicm9sZSI6IkFkbWluIiwiZW1haWwiOiJhZG1pbkBnbWFpbC5jb20iLCJpYXQiOjE3Nzk1NDIxNjksImV4cCI6MTc4MDE0Njk2OX0.9esvBRWdMsSy2cWIWyui-Zhgjml4v8cHz9PFYy2Ka5A
+@staffToken = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6Mywicm9sZSI6IlN0YWZmIiwiZW1haWwiOiJzdGFmZkBnbWFpbC5jb20iLCJpYXQiOjE3Nzk1NDIxODgsImV4cCI6MTc4MDE0Njk4OH0.BfuCwplNBCsgyGyhdiXg7g-26oqQhUGyM1DCZwtKYqM
+
+### =====================================================
+### GET USERS (ADMIN ONLY)
+### =====================================================
+
+GET {{baseUrl}}/api/users
+Authorization: Bearer {{adminToken}}
+
+### =====================================================
+### ADD VEHICLE
+### =====================================================
+
+POST {{baseUrl}}/api/vehicles
+Authorization: Bearer {{customerToken}}
+Content-Type: application/json
+
+{
+  "user_id": 1,
+  "vehicle_number": "TS05EL9999",
+  "vehicle_type": "Bike",
+  "vehicle_brand": "Yamaha",
+  "vehicle_model": "150",
+  "vehicle_color": "Black"
+}
+
+### =====================================================
+### GET USER VEHICLES
+### =====================================================
+
+GET {{baseUrl}}/api/vehicles/user/1
+Authorization: Bearer {{customerToken}}
+
+### =====================================================
+### GET PARKING SLOTS
+### =====================================================
+
+GET {{baseUrl}}/api/parking/slots
+Authorization: Bearer {{customerToken}}
+
+### =====================================================
+### CREATE RESERVATION
+### =====================================================
+
+POST {{baseUrl}}/api/reservations
+Authorization: Bearer {{customerToken}}
+Content-Type: application/json
+
+{
+  "user_id": 1,
+  "vehicle_id": 4,
+  "slot_id": 1,
+  "reservation_date": "2026-05-25",
+  "start_time": "18:00",
+  "expected_end_time": "21:00"
+}
+
+### =====================================================
+### GET RESERVATION HISTORY
+### =====================================================
+
+GET {{baseUrl}}/api/reservations/history/1
+Authorization: Bearer {{customerToken}}
+
+### =====================================================
+### CHECK-IN
+### =====================================================
+
+POST {{baseUrl}}/api/parking/checkin
+Authorization: Bearer {{staffToken}}
+Content-Type: application/json
+
+{
+  "reservation_code": "RSV-20260525-U5-1234"
+}
+
+### =====================================================
+### ACTIVE PARKING SESSIONS
+### =====================================================
+
+GET {{baseUrl}}/api/parking/active
+Authorization: Bearer {{staffToken}}
+
+### =====================================================
+### CHECKOUT
+### =====================================================
+
+POST {{baseUrl}}/api/parking/checkout
+Authorization: Bearer {{staffToken}}
+Content-Type: application/json
+
+{
+  "parking_id": "PK-20260525-2"
+}
+
+### =====================================================
+### GET PAYMENT DETAILS
+### =====================================================
+
+GET {{baseUrl}}/api/payments/PAY-20260523-1
+Authorization: Bearer {{customerToken}}
+
+### =====================================================
+### PAY NOW
+### =====================================================
+
+POST {{baseUrl}}/api/payments/pay
+Authorization: Bearer {{customerToken}}
+Content-Type: application/json
+
+{
+  "payment_code": "PAY-20260523-1",
+  "payment_method": "UPI"
+}
+
+### =====================================================
+### PAYMENT HISTORY
+### =====================================================
+
+GET {{baseUrl}}/api/payments/history/1
+Authorization: Bearer {{customerToken}}
+
+### =====================================================
+### PARKING HISTORY
+### =====================================================
+
+GET {{baseUrl}}/api/parking/history/1
+Authorization: Bearer {{customerToken}}
+
+### =====================================================
+### USER NOTIFICATIONS
+### =====================================================
+
+GET {{baseUrl}}/api/notifications/1
+Authorization: Bearer {{customerToken}}
+
+### =====================================================
+### DASHBOARD ANALYTICS (ADMIN ONLY)
+### =====================================================
+
+GET {{baseUrl}}/api/dashboard/parking
+Authorization: Bearer {{adminToken}}
