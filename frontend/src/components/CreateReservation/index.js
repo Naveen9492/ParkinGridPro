@@ -1,24 +1,18 @@
-import { useEffect, useState } from "react";
-
+import { useEffect, useState, useCallback } from "react";
 import Cookies from "js-cookie";
-
 import { useHistory } from "react-router-dom";
 
 import api from "../../api/axios";
-
 import "./index.css";
 
 const CreateReservation = () => {
   const history = useHistory();
-
   const userId = Cookies.get("user_id");
 
   const [vehicles, setVehicles] = useState([]);
-
   const [slots, setSlots] = useState([]);
 
   const [successMsg, setSuccessMsg] = useState("");
-
   const [errorMsg, setErrorMsg] = useState("");
 
   const [formData, setFormData] = useState({
@@ -29,35 +23,31 @@ const CreateReservation = () => {
     expected_end_time: "",
   });
 
-  useEffect(() => {
-    fetchVehicles();
-
-    fetchSlots();
-  }, []);
-
-  const fetchVehicles = async () => {
+  const fetchVehicles = useCallback(async () => {
     try {
       const response = await api.get(`/vehicles/user/${userId}`);
-
       setVehicles(response.data.vehicles);
     } catch (error) {
       console.log(error.message);
     }
-  };
+  }, [userId]);
 
-  const fetchSlots = async () => {
+  const fetchSlots = useCallback(async () => {
     try {
       const response = await api.get("/parking/slots");
-
       const availableSlots = response.data.slots.filter(
         (slot) => slot.status === "Available",
       );
-
       setSlots(availableSlots);
     } catch (error) {
       console.log(error.message);
     }
-  };
+  }, []);
+
+  useEffect(() => {
+    fetchVehicles();
+    fetchSlots();
+  }, [fetchVehicles, fetchSlots]);
 
   const onChangeInput = (e) => {
     setFormData({
@@ -76,7 +66,6 @@ const CreateReservation = () => {
       });
 
       setSuccessMsg("Reservation created successfully");
-
       setErrorMsg("");
 
       setFormData({
@@ -99,7 +88,6 @@ const CreateReservation = () => {
         <button className="back-btn" onClick={() => history.goBack()}>
           Back
         </button>
-
         <h1>Create Reservation</h1>
       </div>
 
@@ -111,10 +99,9 @@ const CreateReservation = () => {
           required
         >
           <option value="">Select Vehicle</option>
-
-          {vehicles.map((vehicle) => (
-            <option key={vehicle.id} value={vehicle.id}>
-              {vehicle.vehicle_number}
+          {vehicles.map((v) => (
+            <option key={v.id} value={v.id}>
+              {v.vehicle_number}
             </option>
           ))}
         </select>
@@ -126,10 +113,9 @@ const CreateReservation = () => {
           required
         >
           <option value="">Select Slot</option>
-
-          {slots.map((slot) => (
-            <option key={slot.id} value={slot.id}>
-              {slot.slot_number} - Floor {slot.floor_number}
+          {slots.map((s) => (
+            <option key={s.id} value={s.id}>
+              {s.slot_number} - Floor {s.floor_number}
             </option>
           ))}
         </select>
@@ -141,7 +127,6 @@ const CreateReservation = () => {
           onChange={onChangeInput}
           required
         />
-
         <input
           type="time"
           name="start_time"
@@ -149,7 +134,6 @@ const CreateReservation = () => {
           onChange={onChangeInput}
           required
         />
-
         <input
           type="time"
           name="expected_end_time"
@@ -161,7 +145,6 @@ const CreateReservation = () => {
         <button type="submit">Reserve Slot</button>
 
         {successMsg && <p className="success-msg">{successMsg}</p>}
-
         {errorMsg && <p className="error-msg">{errorMsg}</p>}
       </form>
     </div>

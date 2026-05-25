@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import Cookies from "js-cookie";
 import { useHistory } from "react-router-dom";
 
@@ -11,33 +11,28 @@ import "./index.css";
 
 const MyVehicles = () => {
   const history = useHistory();
-
   const userId = Cookies.get("user_id");
 
   const [vehicles, setVehicles] = useState([]);
 
-  useEffect(() => {
-    fetchVehicles();
-  }, []);
-
-  const fetchVehicles = async () => {
+  const fetchVehicles = useCallback(async () => {
     try {
       const response = await api.get(`/vehicles/user/${userId}`);
-
       setVehicles(response.data.vehicles);
     } catch (error) {
       console.log(error.message);
     }
-  };
+  }, [userId]);
+
+  useEffect(() => {
+    fetchVehicles();
+  }, [fetchVehicles]);
 
   const renderVehicleIcon = (type) => {
     switch (type) {
       case "Bike":
         return <MdTwoWheeler className="vehicle-icon" />;
-
       case "Car":
-        return <FaCarSide className="vehicle-icon" />;
-
       default:
         return <FaCarSide className="vehicle-icon" />;
     }
@@ -49,7 +44,6 @@ const MyVehicles = () => {
         <button className="back-btn" onClick={() => history.goBack()}>
           Back
         </button>
-
         <h1>My Vehicles</h1>
       </div>
 
@@ -63,22 +57,18 @@ const MyVehicles = () => {
           >
             <div className="vehicle-top">
               <h2>{vehicle.vehicle_number}</h2>
-
               {renderVehicleIcon(vehicle.vehicle_type)}
             </div>
 
             <p>
               <strong>Type:</strong> {vehicle.vehicle_type}
             </p>
-
             <p>
               <strong>Brand:</strong> {vehicle.vehicle_brand}
             </p>
-
             <p>
               <strong>Model:</strong> {vehicle.vehicle_model}
             </p>
-
             <p>
               <strong>Color:</strong> {vehicle.vehicle_color}
             </p>
