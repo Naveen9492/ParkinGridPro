@@ -1,0 +1,41 @@
+.navbar-container {
+  height: 10vh;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 20px;
+  background-color: #01042f;
+}
+.nav-link {
+  text-decoration: none;
+  color: inherit;
+}
+.logo {
+  color: #ffffff;
+  font-size: 30px;
+}
+.logout-btn {
+  border: none;
+  outline: none;
+  cursor: pointer;
+  font-size: 20px;
+  background-color: transparent;
+  color: #ffffff;
+  padding: 5px 15px;
+  font-weight: bold;
+  font-family: "Trebuchet MS";
+}
+.logout-btn:hover {
+  color: #ea0707;
+  transition: 0.4s ease-in-out;
+}
+
+@media screen and (max-width: 767px) {
+  .logo {
+    font-size: 20px;
+  }
+  .logout-btn {
+    font-size: 15px;
+  }
+}

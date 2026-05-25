@@ -1,0 +1,45 @@
+.parking-page {
+  min-height: 100vh;
+  background: #eef2ff;
+  padding: 30px;
+}
+
+.parking-header {
+  display: flex;
+  gap: 20px;
+  align-items: center;
+  margin-bottom: 30px;
+}
+
+.parking-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 20px;
+}
+
+.parking-card {
+  background: white;
+  padding: 22px;
+  border-radius: 14px;
+}
+
+.parking-card h2 {
+  color: #1d4ed8;
+  margin-bottom: 14px;
+}
+
+@media screen and (max-width: 992px) {
+  .parking-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media screen and (max-width: 576px) {
+  .parking-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .parking-page {
+    padding: 16px;
+  }
+}
